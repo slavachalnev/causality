@@ -47,9 +47,10 @@ def train(model: HookedTransformer, dataloader: DataLoader, device, checkpoint_d
             ignore_index=-100,
         )
         loss.backward()
-        print(loss.item())
         optimizer.step()
         
+        if (step + 1) % 100 == 0:
+            print(step, loss.item())
         if step % 1000 == 0:
             wandb.log({"loss": loss.item()})
         if (step + 1) % 10000 == 0 or (step + 1) == len(dataloader):
