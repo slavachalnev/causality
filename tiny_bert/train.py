@@ -48,13 +48,13 @@ def train(model: HookedTransformer, dataloader: DataLoader, device, checkpoint_d
         )
         loss.backward()
         print(loss.item())
-        wandb.log({"loss": loss.item()})
         optimizer.step()
         
-        if (step + 1) % 1000 == 0 or (step + 1) == len(dataloader):
+        if step % 1000 == 0:
+            wandb.log({"loss": loss.item()})
+        if (step + 1) % 10000 == 0 or (step + 1) == len(dataloader):
             checkpoint_path = os.path.join(checkpoint_dir, f"step_{step+1}.pt")
             torch.save(model.state_dict(), checkpoint_path)
-            wandb.save(checkpoint_path)
 
 def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -62,7 +62,7 @@ def main():
     model = HookedTransformer(config, tokenizer, move_to_device=False)
     model.to(device)
     
-    data = load_dataset("NeelNanda/c4-code-tokenized-2b", split="train[:10%]")
+    data = load_dataset("NeelNanda/c4-code-tokenized-2b", split="train")
     data.set_format(type="torch", columns=["tokens"])
     print('loaded data')
     
