@@ -3,7 +3,7 @@
 # the loss fn is bert's masked language model loss.
 
 import os
-import datetime
+from datetime import datetime
 import torch
 from torch.utils.data import DataLoader
 from transformer_lens import HookedTransformer
