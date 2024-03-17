@@ -19,3 +19,9 @@ def get_config_and_tok(bidirectional=True):
 # config, tok = get_config_and_tok()
 # print('done')
 
+def load_model(path: str, bidirectional=True):
+    config, tok = get_config_and_tok(bidirectional)
+    config['init_weights'] = False
+    model = HookedTransformer(config, tok, move_to_device=False)
+    model.load_state_dict(torch.load(path, map_location='cpu'))
+    return model

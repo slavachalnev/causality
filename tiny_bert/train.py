@@ -33,7 +33,7 @@ def mask_tokens(inputs, tokenizer, mlm_probability=0.15):
 
 def train(model: HookedTransformer, dataloader: DataLoader, device, checkpoint_dir: str):
     model.train()
-    optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
+    optimizer = torch.optim.Adam(model.parameters(), lr=2e-4)
     
     for step, batch in enumerate(dataloader):
         inputs = batch["tokens"].to(device)
@@ -51,7 +51,7 @@ def train(model: HookedTransformer, dataloader: DataLoader, device, checkpoint_d
         
         if (step + 1) % 100 == 0:
             print(step, loss.item())
-        if step % 1000 == 0:
+        if step % 100 == 0:
             wandb.log({"loss": loss.item()})
         if (step + 1) % 10000 == 0 or (step + 1) == len(dataloader):
             checkpoint_path = os.path.join(checkpoint_dir, f"step_{step+1}.pt")
